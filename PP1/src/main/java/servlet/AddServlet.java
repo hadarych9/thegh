@@ -1,7 +1,7 @@
 package servlet;
 
 import model.User;
-import service.UserJDBCService;
+import service.Service;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,12 +19,12 @@ public class AddServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        UserJDBCService service = UserJDBCService.getInstance();
+        Service service = Service.getInstance();
         req.setCharacterEncoding("UTF-8");
         String name = req.getParameter("name");
         String password = req.getParameter("pass");
         Long age;
-        if(service.doesClientNotExist(name)){
+        if(service.doesUserNotExist(name)){
             try{
                 if(!req.getParameter("age").equals("") & req.getParameter("age") != null) {
                     age = Long.parseLong(req.getParameter("age"));

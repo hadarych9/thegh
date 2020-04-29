@@ -1,7 +1,7 @@
 package servlet;
 
 import model.User;
-import service.UserJDBCService;
+import service.Service;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,7 +14,7 @@ import java.io.IOException;
 public class UpdateServlet extends HttpServlet {
 
     private Long id;
-    private UserJDBCService service = UserJDBCService.getInstance();
+    private Service service = Service.getInstance();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -22,6 +22,7 @@ public class UpdateServlet extends HttpServlet {
         User user = service.getById(id);
         req.setAttribute("id", id);
         req.setAttribute("name", user.getName());
+        req.setAttribute("password", user.getPassword());
         req.setAttribute("age", user.getAge());
         req.getRequestDispatcher("view/update.jsp").forward(req, resp);
         resp.sendRedirect("update.jsp");
@@ -47,7 +48,9 @@ public class UpdateServlet extends HttpServlet {
             result = "Пожалуйста, введите возраст в виде цифры";
             check = null;
         }
-        if(name.equals("") & password.equals("") & age == null) {
+        if((name.equals("") | name.equals(user.getName()))
+                & (password.equals("") | password.equals(user.getPassword())
+                & (age == null | age == user.getAge()))) {
             if(result.equals(success)) result = "Изменения не внесены";
             check = null;
         } else if(!name.equals(name.replaceAll("[^\\da-zA-Zа-яёА-ЯЁ]", ""))){
@@ -55,7 +58,7 @@ public class UpdateServlet extends HttpServlet {
             if(result.equals(success)) result = "Для ввода логина необходимо использовать только буквы или цифры";
             check = null;
         }
-        if (!service.doesClientNotExist(name)) {
+        if (!service.doesUserNotExist(name) & !name.equals(user.getName())) {
                 name = user.getName();
                 if(result.equals(success)) result = "Такой пользователь уже существует";
                 check = null;

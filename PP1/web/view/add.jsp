@@ -25,10 +25,10 @@
         <div class="w3-container"></div>
     </div>
     <div class="w3-col m8">
-        <div class="w3-card-4">
-            <div class="w3-container w3-green w3-left-align">
-                <h4><%= header%>
-                </h4>
+        <div class="w3-card-4 w3-white">
+            <div class="w3-container w3-display-container w3-green">
+                <button onclick="location.href='/'" class="w3-button w3-margin-right w3-display-right w3-round-large w3-hover-green w3-border w3-border-green w3-hover-border-white">✕</button>
+                <h4><%= header%></h4>
             </div>
             <form method="get" class="w3-selection w3-white w3-padding">
                 <label>Логин:
@@ -44,12 +44,12 @@
                 </label>
                 <button type="submit" class="w3-button w3-green w3-margin-bottom">Сохранить</button>
             </form>
-            <div class="w3-container w3-right-align">
-                <form action="${request.contextPath}/" method="get">
-                    <input type="hidden" name="Id" value=${user.id}>
-                    <button type="submit" class="w3-button w3-blue-grey w3-text-white">Вернуться на главную</button>
-                </form>
-            </div>
+        </div>
+        <div class="w3-container w3-right-align">
+            <form action="${request.contextPath}/" method="get">
+                <input type="hidden" name="Id" value=${user.id}>
+                <button type="submit" class="w3-button w3-blue-grey w3-text-white">Вернуться на главную</button>
+            </form>
         </div>
     </div>
     <div class="w3-col m2">

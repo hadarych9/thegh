@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserJdbcDAO {
+public class UserJdbcDAO implements UserDAO{
     private Connection connection;
 
     public UserJdbcDAO(Connection connection){
@@ -37,8 +37,9 @@ public class UserJdbcDAO {
         return updated;
     }
 
-    public int addUser(User user){
-        int x = 0;
+    @Override
+    public long addUser(User user){
+        long x = 0;
         try{
             PreparedStatement pstmt = connection.prepareStatement("INSERT INTO users (name,password,age) VALUES (?, ?, ?)");
             pstmt.setString(1, user.getName());
@@ -52,19 +53,21 @@ public class UserJdbcDAO {
         return x;
     }
 
-    public String doesClientNotExist(String name){
-        String result = null;
+    @Override
+    public boolean doesUserNotExist(String name){
+        User user = null;
         try(PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM users WHERE name=?")){
             pstmt.setString(1, name);
             pstmt.executeQuery();
             ResultSet resultSet = pstmt.getResultSet();
-            if(resultSet.next()) result = resultSet.getString("name");
+            if(resultSet.next()) user = new User(resultSet.getLong("id"), resultSet.getString("name"), resultSet.getString("password"), resultSet.getLong("age"));
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return result;
+        return user == null;
     }
 
+    @Override
     public int deleteUser(Long id) {
         int x = 0;
         try{
@@ -75,6 +78,7 @@ public class UserJdbcDAO {
         return x;
     }
 
+    @Override
     public User getById(Long id) {
         String name = null;
         String pass = null;
@@ -101,6 +105,7 @@ public class UserJdbcDAO {
         return new User(id, name, pass, age);
     }
 
+    @Override
     public int updateUser(User user){
         Long id = user.getId();
         int x = 0;
@@ -125,6 +130,7 @@ public class UserJdbcDAO {
         return x;
     }
 
+    @Override
     public List<User> getAllUsers(){
         List<User> uList = new ArrayList<>();
         try(Statement stmt = connection.createStatement(); ResultSet resultSet = stmt.executeQuery("SELECT * FROM users")) {

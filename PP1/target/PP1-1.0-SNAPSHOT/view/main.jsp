@@ -37,7 +37,7 @@
             if (request.getAttribute("Result") != null) {
                 out.println("<div class=\"w3-panel w3-" + color + " w3-display-container w3-card-4 w3-round\">\n" +
                         "   <span onclick=\"this.parentElement.style.display='none'\"\n" +
-                        "   class=\"w3-button w3-margin-right w3-display-right w3-round-large w3-hover-" + color + " w3-border w3-border-" + color + " w3-hover-border-white\">×</span>\n" +
+                        "   class=\"w3-button w3-margin-right w3-display-right w3-round-large w3-hover-" + color + " w3-border w3-border-" + color + " w3-hover-border-white\">✕</span>\n" +
                         "   <h5>" + request.getAttribute("Result") + "</h5>\n" +
                         "</div>");
             }

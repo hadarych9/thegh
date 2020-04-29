@@ -1,7 +1,7 @@
 package servlet;
 
 import model.User;
-import service.UserJDBCService;
+import service.Service;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,7 +15,7 @@ public class DeleteServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        UserJDBCService service = UserJDBCService.getInstance();
+        Service service = Service.getInstance();
         Long id = Long.parseLong(req.getParameter("Id"));
         User user = service.getById(id);
         String result;

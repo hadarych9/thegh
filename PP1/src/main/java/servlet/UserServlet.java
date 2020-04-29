@@ -1,7 +1,7 @@
 package servlet;
 
 import model.User;
-import service.UserJDBCService;
+import service.Service;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,7 +18,7 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        UserJDBCService service = UserJDBCService.getInstance();
+        Service service = Service.getInstance();
         service.createTable();
 
         String result = (String) req.getAttribute("Result");
@@ -51,7 +51,7 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        UserJDBCService service = UserJDBCService.getInstance();
+        Service service = Service.getInstance();
         service.dropTable();
         cresult = "Очистка базы успешно завершена";
         resp.sendRedirect("/");
