@@ -8,41 +8,25 @@ import util.DBHelper;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.Connection;
 import java.util.*;
 
 public class Service {
-
-    private static String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-    private static String props = rootPath + "dao.properties";
 
     private static UserDAO dao;
 
     private static Service INSTANCE;
 
     public static Service getInstance(){
-        try {
-            FileInputStream fileInputStream = new FileInputStream(props);
-            Properties prop = new Properties();
-            prop.load(fileInputStream);
-            String daotype = prop.getProperty("daotype");
-            if(daotype.equals("JDBC")) dao = new UserJdbcDAO(DBHelper.getConnection());
-            else if(daotype.equals("Hibernate")) dao = new UserHibernateDAO(DBHelper.getSessionFactory());
-        } catch (IOException e) {
-            System.out.println("Файл конфигурации " + props + " не обнаружен");
-            e.printStackTrace();
-        }
-
         if(INSTANCE == null){
             synchronized (Service.class){
-                if(INSTANCE == null) INSTANCE = new Service();
+                if(INSTANCE == null) INSTANCE = new Service(UserDaoFactory.getDao());
             }
         }
         return INSTANCE;
     }
 
-    public Service(){
-
+    public Service(UserDAO dao){
+        Service.dao = dao;
     }
 
     public void addUser(User user){
