@@ -89,11 +89,16 @@
                     out.println("<button onclick=\"location.href='/'\" class=\"w3-button w3-padding-large w3-green w3-margin-bottom w3-text-white\" style=\"display:inline\">Вернуться на главную</button>\n");
                 }
             %>
-            <form action="${pageContext.request.contextPath}/login" method="post" style="display:inline">
-                <input type="hidden" name="name" value="log">
-                <input type="hidden" name="pass" value="off">
-                <button type="submit" class="w3-button w3-padding-large w3-green w3-margin-bottom w3-text-white">Выйти</button>
-            </form>
+            <%
+                if (Active.getInstance().getActive().getRole().equals("user")) {
+                    out.println("<form action=\"" + request.getContextPath() + "/login\" method=\"post\" style=\"display:inline\">\n" +
+                            "                <input type=\"hidden\" name=\"name\" value=\"log\">\n" +
+                            "                <input type=\"hidden\" name=\"pass\" value=\"off\">\n" +
+                            "                <button type=\"submit\" class=\"w3-button w3-padding-large w3-green w3-margin-bottom w3-text-white\">Выйти</button>\n" +
+                            "            </form>");
+                }
+            %>
+
         </div>
     </div>
 </div>
