@@ -21,19 +21,24 @@ public class User {
     @Column(name = "age")
     private Long age;
 
+    @Column(name = "role")
+    private String role;
+
     public User(){}
 
-    public User(Long id, String name, String password, Long age){
+    public User(Long id, String name, String password, Long age, String role){
         this.id = id;
         this.name = name;
         this.password = password;
         this.age = age;
+        this.role = role;
     }
 
-    public User(String name, String password, Long age){
+    public User(String name, String password, Long age, String role){
         this.name = name;
         this.password = password;
         this.age = age;
+        this.role = role;
     }
 
     public void setId(Long id){
@@ -68,6 +73,14 @@ public class User {
         return age;
     }
 
+    public void setRole(String role){
+        this.role = role;
+    }
+
+    public String getRole(){
+        return role;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -76,12 +89,13 @@ public class User {
         return id.equals(user.id) &&
                 name.equals(user.name) &&
                 password.equals(user.password) &&
-                age.equals(user.age);
+                age.equals(user.age) &&
+                role.equals(user.role);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, password, age);
+        return Objects.hash(id, name, password, age, role);
     }
 
     @Override
@@ -91,6 +105,7 @@ public class User {
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
                 ", age='" + age + '\'' +
+                ", role='" + role + '\'' +
                 '}';
     }
 }

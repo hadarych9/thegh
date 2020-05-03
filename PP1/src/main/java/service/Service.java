@@ -7,7 +7,7 @@ import java.util.*;
 
 public class Service {
 
-    private static UserDAO dao;
+    private UserDAO dao;
 
     private static Service INSTANCE;
 
@@ -20,8 +20,8 @@ public class Service {
         return INSTANCE;
     }
 
-    public Service(UserDAO dao){
-        Service.dao = dao;
+    private Service(UserDAO dao){
+        this.dao = dao;
     }
 
     public void addUser(User user){
@@ -44,8 +44,16 @@ public class Service {
         return dao.getById(id);
     }
 
+    public User getByName(String name){
+        return dao.getByName(name);
+    }
+
     public int deleteUser(Long id){
         return dao.deleteUser(id);
+    }
+
+    public int countRoles(String role){
+        return dao.countRoles(role);
     }
 
     public void createTable(){

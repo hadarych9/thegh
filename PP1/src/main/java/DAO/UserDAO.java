@@ -12,6 +12,10 @@ public interface UserDAO {
 
     User getById(Long id);
 
+    User getByName(String name);
+
+    int countRoles(String role);
+
     int deleteUser(Long id);
 
     int updateUser(User user);

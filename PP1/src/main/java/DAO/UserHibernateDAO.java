@@ -45,6 +45,28 @@ public class UserHibernateDAO implements UserDAO {
     }
 
     @Override
+    public User getByName(String name) {
+        User user = null;
+        Session session = sessionFactory.openSession();
+        Query<User> query = session.createQuery("FROM User WHERE name = :name");
+        query.setParameter("name", name);
+        if(!query.list().isEmpty()) user = query.list().get(0);
+        session.close();
+        return user;
+    }
+
+    @Override
+    public int countRoles(String role) {
+        int result = 0;
+        Session session = sessionFactory.openSession();
+        Query<User> query = session.createQuery("FROM User WHERE role = :role");
+        query.setParameter("role", role);
+        result = query.list().size();
+        session.close();
+        return result;
+    }
+
+    @Override
     public int deleteUser(Long id) {
         Session session = sessionFactory.openSession();
         Transaction tr = session.beginTransaction();
@@ -63,11 +85,12 @@ public class UserHibernateDAO implements UserDAO {
     public int updateUser(User user) {
         Session session = sessionFactory.openSession();
         Transaction tr = session.beginTransaction();
-        Query<User> query = session.createQuery("UPDATE User SET name = :name , password = :password , age = :age WHERE id = :id");
+        Query<User> query = session.createQuery("UPDATE User SET name = :name , password = :password , age = :age, role = :role WHERE id = :id");
         query.setParameter("id", user.getId());
         query.setParameter("name", user.getName());
         query.setParameter("password", user.getPassword());
         query.setParameter("age", user.getAge());
+        query.setParameter("role", user.getRole());
         query.executeUpdate();
         tr.commit();
         session.close();

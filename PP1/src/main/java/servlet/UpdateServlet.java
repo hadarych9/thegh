@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "update", urlPatterns = "/update")
+@WebServlet(name = "update", urlPatterns = "/admin/update")
 public class UpdateServlet extends HttpServlet {
 
     private Long id;
@@ -20,12 +20,18 @@ public class UpdateServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         id = Long.parseLong(req.getParameter("Id"));
         User user = service.getById(id);
+        if(user == null){
+            req.setAttribute("Result", "Такого пользователя не существует");
+            req.getRequestDispatcher("/admin").forward(req, resp);
+            return;
+        }
         req.setAttribute("id", id);
         req.setAttribute("name", user.getName());
         req.setAttribute("password", user.getPassword());
         req.setAttribute("age", user.getAge());
-        req.getRequestDispatcher("view/update.jsp").forward(req, resp);
-        resp.sendRedirect("update.jsp");
+        req.setAttribute("role", user.getRole());
+        req.getRequestDispatcher("/view/admin/update.jsp").forward(req, resp);
+        //resp.sendRedirect("update.jsp");
     }
 
     @Override
@@ -38,9 +44,10 @@ public class UpdateServlet extends HttpServlet {
         String name = req.getParameter("name");
         String password = req.getParameter("pass");
         Long age = null;
+        String role = req.getParameter("role");
         Long check = 1L;
         try {
-            if (!req.getParameter("age").equals("") & req.getParameter("age") != null) {
+            if (req.getParameter("age") != null && !req.getParameter("age").equals("")) {
                 age = Long.parseLong(req.getParameter("age"));
             }
         } catch (NumberFormatException e){
@@ -49,8 +56,8 @@ public class UpdateServlet extends HttpServlet {
             check = null;
         }
         if((name.equals("") | name.equals(user.getName()))
-                & (password.equals("") | password.equals(user.getPassword())
-                & (age == null | age == user.getAge()))) {
+                & (password.equals("") | password.equals(user.getPassword()))
+                & (age == null | age == user.getAge()) & (role.equals("") | role.equals(user.getRole()))) {
             if(result.equals(success)) result = "Изменения не внесены";
             check = null;
         } else if(!name.equals(name.replaceAll("[^\\da-zA-Zа-яёА-ЯЁ]", ""))){
@@ -67,9 +74,10 @@ public class UpdateServlet extends HttpServlet {
             }
         if(password.equals("")) password = user.getPassword();
         if(age == null) age = user.getAge();
-        service.updateUser(new User(id, name, password, age));
+        if(role.equals("")) role = user.getRole();
+        service.updateUser(new User(id, name, password, age, role));
         req.setAttribute("Result", result);
         req.setAttribute("check", check);
-        req.getRequestDispatcher("/").forward(req, resp);
+        req.getRequestDispatcher("/admin").forward(req, resp);
     }
 }

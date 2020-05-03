@@ -41,10 +41,11 @@ public class UserJdbcDAO implements UserDAO{
     public long addUser(User user){
         long x = 0;
         try{
-            PreparedStatement pstmt = connection.prepareStatement("INSERT INTO users (name,password,age) VALUES (?, ?, ?)");
+            PreparedStatement pstmt = connection.prepareStatement("INSERT INTO users (name,password,age,role) VALUES (?, ?, ?, ?)");
             pstmt.setString(1, user.getName());
             pstmt.setString(2, user.getPassword());
             pstmt.setLong(3, user.getAge());
+            pstmt.setString(4, user.getRole());
             x = pstmt.executeUpdate();
             pstmt.close();
         } catch (SQLException e) {
@@ -55,16 +56,7 @@ public class UserJdbcDAO implements UserDAO{
 
     @Override
     public boolean doesUserNotExist(String name){
-        User user = null;
-        try(PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM users WHERE name=?")){
-            pstmt.setString(1, name);
-            pstmt.executeQuery();
-            ResultSet resultSet = pstmt.getResultSet();
-            if(resultSet.next()) user = new User(resultSet.getLong("id"), resultSet.getString("name"), resultSet.getString("password"), resultSet.getLong("age"));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return user == null;
+        return getByName(name) == null;
     }
 
     @Override
@@ -83,6 +75,7 @@ public class UserJdbcDAO implements UserDAO{
         String name = null;
         String pass = null;
         Long age = null;
+        String role = null;
         try{
             name = TExecutor.execQuery(connection, "SELECT * FROM users WHERE id=" + id,
                     resultSet -> {
@@ -99,10 +92,43 @@ public class UserJdbcDAO implements UserDAO{
                         resultSet.next();
                         return resultSet.getLong("age");
                     });
+            role = TExecutor.execQuery(connection, "SELECT * FROM users WHERE id=" + id,
+                    resultSet -> {
+                        resultSet.next();
+                        return resultSet.getString("role");
+                    });
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new User(id, name, pass, age);
+        return new User(id, name, pass, age, role);
+    }
+
+    @Override
+    public User getByName(String name) {
+        User user = null;
+        try(PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM users WHERE name=?")){
+            pstmt.setString(1, name);
+            pstmt.executeQuery();
+            ResultSet resultSet = pstmt.getResultSet();
+            if(resultSet.next()) user = new User(resultSet.getLong("id"), resultSet.getString("name"), resultSet.getString("password"), resultSet.getLong("age"), resultSet.getString("role"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+    @Override
+    public int countRoles(String role){
+        int result = 0;
+        try(PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM users WHERE role=?")){
+            pstmt.setString(1, role);
+            pstmt.executeQuery();
+            ResultSet resultSet = pstmt.getResultSet();
+            while (resultSet.next()){
+                result++;
+            }
+        } catch (SQLException e) {e.printStackTrace();}
+        return result;
     }
 
     @Override
@@ -110,12 +136,13 @@ public class UserJdbcDAO implements UserDAO{
         Long id = user.getId();
         int x = 0;
         try {
-            PreparedStatement pstmt = connection.prepareStatement("UPDATE users SET name=? , password=? , age=? WHERE id=?");
+            PreparedStatement pstmt = connection.prepareStatement("UPDATE users SET name=? , password=? , age=? , role=? WHERE id=?");
             connection.setAutoCommit(false);
             pstmt.setString(1, user.getName());
             pstmt.setString(2, user.getPassword());
             pstmt.setLong(3, user.getAge());
-            pstmt.setLong(4, id);
+            pstmt.setString(4, user.getRole());
+            pstmt.setLong(5, id);
             x = pstmt.executeUpdate();
             connection.commit();
             connection.setAutoCommit(true);
@@ -138,7 +165,8 @@ public class UserJdbcDAO implements UserDAO{
                 uList.add(new User(resultSet.getLong("id"),
                         resultSet.getString("name"),
                         resultSet.getString("password"),
-                        resultSet.getLong("age")));
+                        resultSet.getLong("age"),
+                        resultSet.getString("role")));
             }
         } catch (SQLException e) {e.printStackTrace();}
         return uList;
@@ -147,7 +175,7 @@ public class UserJdbcDAO implements UserDAO{
     public void createTable() {
         try {
             Statement stmt = connection.createStatement();
-            stmt.execute("CREATE TABLE IF NOT EXISTS users (id bigint auto_increment, name VARCHAR(256), password VARCHAR(256), age BIGINT, primary key(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci");
+            stmt.execute("CREATE TABLE IF NOT EXISTS users (id bigint auto_increment, name VARCHAR(256), password VARCHAR(256), age BIGINT, role VARCHAR(256), primary key(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci");
             stmt.close();
         } catch (SQLException e) {
             e.printStackTrace();

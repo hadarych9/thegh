@@ -1,6 +1,7 @@
 package servlet;
 
 import model.User;
+import service.Active;
 import service.Service;
 
 import javax.servlet.ServletException;
@@ -23,6 +24,7 @@ public class AddServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         String name = req.getParameter("name");
         String password = req.getParameter("pass");
+        String role = (req.getParameter("role") == null || req.getParameter("role").equals("")) ? "user" : req.getParameter("role");
         Long age;
         if(service.doesUserNotExist(name)){
             try{
@@ -34,7 +36,9 @@ public class AddServlet extends HttpServlet {
                         req.setAttribute("Result", "Для ввода логина необходимо использовать только буквы или цифры");
                     }
                     else {
-                        service.addUser(new User(name, password, age));
+                        User user = new User(name, password, age, role);
+                        service.addUser(user);
+                        if(Active.getInstance().getActive() == null) Active.getInstance().setActive(user);
                         req.setAttribute("Result", "Пользователь " + name + " добавлен(а)!");
                         req.setAttribute("check", 1L);
                     }
@@ -43,6 +47,18 @@ public class AddServlet extends HttpServlet {
                 req.setAttribute("Result", "Пожалуйста, введите возраст в виде цифры");
             }
         } else req.setAttribute("Result", "Такой пользователь уже существует");
-        req.getRequestDispatcher("/").forward(req, resp);
+        /*if(Active.getInstance().getActive() != null){
+            req.getRequestDispatcher("/admin").forward(req, resp);
+            return;
+        }*/
+        if(Active.getInstance().getActive() != null) {
+            if (Active.getInstance().getActive().getRole().equals("admin")) {
+                req.getRequestDispatcher("/admin").forward(req, resp);
+            } else {
+                resp.sendRedirect("/user");
+            }
+            return;
+        }
+        req.getRequestDispatcher("view/add.jsp").forward(req, resp);
     }
 }

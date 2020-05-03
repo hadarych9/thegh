@@ -1,4 +1,4 @@
-<%--
+<%@ page import="service.Active" %><%--
   Created by IntelliJ IDEA.
   User: ale-k
   Date: 25.04.2020
@@ -7,11 +7,13 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
+    request.setCharacterEncoding("UTF-8");
     String header = "Пожалуйста, введите новые значения в те поля, которые желаете изменить";
     Long id = (Long) request.getAttribute("id");
     String name = (String) request.getAttribute("name");
     String pass = (String) request.getAttribute("password");
     Long age = (Long) request.getAttribute("age");
+    String role = Active.getInstance().getActive().getRole();
 %>
 <html>
 <head>
@@ -24,11 +26,8 @@
     <h5>Редактирование пользователя <%= name%>
     </h5>
 </div>
-<div class="w3-row w3-container w3-margin-bottom w3-padding">
-    <div class="w3-col m2">
-        <div class="w3-container"></div>
-    </div>
-    <div class="w3-col m8">
+<div class="w3-container w3-display-container w3-margin-bottom w3-padding">
+    <div class="w3-container w3-display-topmiddle w3-margin-bottom w3-padding" style="width:75%;">
         <div class="w3-card-4 w3-white">
             <div class="w3-container w3-display-container w3-green">
                 <button onclick="location.href='/'" class="w3-button w3-margin-right w3-display-right w3-round-large w3-hover-green w3-border w3-border-green w3-hover-border-white">✕</button>
@@ -50,18 +49,26 @@
                            style="width: 30%"><br/>
                 </label>
 
+                <%
+                    if(role.equals("admin")){
+                        out.println("Полномочия:\n" +
+                                "                <p>\n" +
+                                "                    <input class=\"w3-radio\" type=\"radio\" name=\"role\" value=\"admin\" checked>\n" +
+                                "                    <label>Администратор</label></p>\n" +
+                                "                <p>\n" +
+                                "                    <input class=\"w3-radio\" type=\"radio\" name=\"role\" value=\"user\" checked>\n" +
+                                "                    <label>Пользователь</label></p>");
+                    }
+                %>
+
                 <button type="submit" class="w3-button w3-green w3-margin-bottom">Сохранить</button>
             </form>
         </div>
         <div class="w3-container w3-light-grey w3-right-align">
-            <form action="${request.contextPath}/" method="get">
-                <input type="hidden" name="Id" value=${user.id}>
+            <form action="${pageContext.request.contextPath}/" method="get">
                 <button type="submit" class="w3-button w3-blue-grey w3-text-white">Вернуться на главную</button>
             </form>
         </div>
-    </div>
-    <div class="w3-col m2">
-        <div class="w3-container"></div>
     </div>
 </div>
 </body>

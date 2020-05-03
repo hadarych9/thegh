@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "delete", urlPatterns = "/delete")
+@WebServlet(name = "delete", urlPatterns = "/admin/delete")
 public class DeleteServlet extends HttpServlet {
 
     @Override
@@ -18,19 +18,26 @@ public class DeleteServlet extends HttpServlet {
         Service service = Service.getInstance();
         Long id = Long.parseLong(req.getParameter("Id"));
         User user = service.getById(id);
-        String result;
+        String result = null;
         Long check = null;
-        int x = service.deleteUser(id);
+        int x = 0;
+        if(user.getRole() == null) user.setRole("user");
+        if(user.getRole().equals("admin")){
+            if(service.countRoles("admin") > 1) x = service.deleteUser(id);
+            else result = "Нельзя удалить единственного администратора";
+        } else if(user.getRole().equals("user") | user.getRole().equals("") | user.getRole() == null){
+            x = service.deleteUser(id);
+        }
         if (x > 0){
             result = "Удаление "+user.getName()+" успешно проведено";
             check = 1L;
 
         } else {
-            result = "Удаление неудачно";
+            if(result == null) result = "Удаление неудачно";
         }
         req.setAttribute("Result", result);
         req.setAttribute("check", check);
-        req.getRequestDispatcher("/").forward(req, resp);
+        req.getRequestDispatcher("/admin").forward(req, resp);
     }
 
     @Override
