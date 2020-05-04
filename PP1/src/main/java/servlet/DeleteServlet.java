@@ -18,6 +18,11 @@ public class DeleteServlet extends HttpServlet {
         Service service = Service.getInstance();
         Long id = Long.parseLong(req.getParameter("Id"));
         User user = service.getById(id);
+        if(user == null){
+            req.setAttribute("Result", "Такого пользователя не существует");
+            req.getRequestDispatcher("/admin").forward(req, resp);
+            return;
+        }
         String result = null;
         Long check = null;
         int x = 0;

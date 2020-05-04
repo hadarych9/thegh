@@ -38,7 +38,6 @@ public class AuthFilter implements Filter {
         if(config.getInitParameter("active").equalsIgnoreCase("true")){
             HttpServletRequest req = (HttpServletRequest)request;
             String page = req.getRequestURI().substring(req.getContextPath().length());
-            System.out.println("page " + page);
             if(Active.getInstance().getActive() == null & !page.equals("/add")){
                 request.getRequestDispatcher("/login").forward(request, response);
                 return;
