@@ -47,15 +47,11 @@ public class AddServlet extends HttpServlet {
                 req.setAttribute("Result", "Пожалуйста, введите возраст в виде цифры");
             }
         } else req.setAttribute("Result", "Такой пользователь уже существует");
-        /*if(Active.getInstance().getActive() != null){
-            req.getRequestDispatcher("/admin").forward(req, resp);
-            return;
-        }*/
         if(Active.getInstance().getActive() != null) {
             if (Active.getInstance().getActive().getRole().equals("admin")) {
                 req.getRequestDispatcher("/admin").forward(req, resp);
             } else {
-                resp.sendRedirect("/user");
+                req.getRequestDispatcher("view/userPage.jsp").forward(req, resp);
             }
             return;
         }

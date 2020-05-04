@@ -67,15 +67,6 @@
                                 "                    <label>Администратор</label></p>");
                     }
                 %>
-
-                <%--Полномочия:
-                <p>
-                    <input class="w3-radio" type="radio" name="role" value="user" checked>
-                    <label>Пользователь</label></p>
-                <p>
-                    <input class="w3-radio" type="radio" name="role" value="admin" checked>
-                    <label>Администратор</label></p>--%>
-
                 <button type="submit" class="w3-button w3-green w3-margin-bottom">Сохранить</button>
             </form>
         </div>

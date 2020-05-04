@@ -56,7 +56,6 @@ public class AuthFilter implements Filter {
             }
             chain.doFilter(request, response);
         }
-
     }
 
     @Override

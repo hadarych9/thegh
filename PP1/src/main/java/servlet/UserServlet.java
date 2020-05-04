@@ -1,5 +1,7 @@
 package servlet;
 
+import service.Active;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,6 +18,13 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
-
+        String name = req.getParameter("name");
+        String password = req.getParameter("pass");
+        if(name.equals("log") & password.equals("off")) {
+            req.setAttribute("Result", "Вы вышли из системы");
+            req.setAttribute("check", 1L);
+            Active.getInstance().setActive(null);
+        }
+        req.getRequestDispatcher("view/login.jsp").forward(req, resp);
     }
 }

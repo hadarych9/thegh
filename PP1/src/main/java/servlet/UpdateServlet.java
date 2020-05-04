@@ -20,13 +20,17 @@ public class UpdateServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         id = Long.parseLong(req.getParameter("Id"));
         User user = service.getById(id);
+        if(id == null | user == null){
+            req.setAttribute("Result", "Такого пользователя не существует");
+            req.getRequestDispatcher("/admin").forward(req, resp);
+            return;
+        }
         req.setAttribute("id", id);
         req.setAttribute("name", user.getName());
         req.setAttribute("password", user.getPassword());
         req.setAttribute("age", user.getAge());
         req.setAttribute("role", user.getRole());
         req.getRequestDispatcher("/view/admin/update.jsp").forward(req, resp);
-        //resp.sendRedirect("update.jsp");
     }
 
     @Override
@@ -37,11 +41,6 @@ public class UpdateServlet extends HttpServlet {
         User user = service.getById(id);
         req.setAttribute("Id", id);
         String name = req.getParameter("name");
-        if(req.getParameter("name") == null | name.equals("null")){
-            req.setAttribute("Result", "Такого пользователя не существует");
-            req.getRequestDispatcher("/admin").forward(req, resp);
-            return;
-        }
         String password = req.getParameter("pass");
         Long age = null;
         String role = req.getParameter("role");

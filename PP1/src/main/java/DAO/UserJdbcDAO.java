@@ -99,6 +99,7 @@ public class UserJdbcDAO implements UserDAO{
                     });
         } catch (SQLException e) {
             e.printStackTrace();
+            return null;
         }
         return new User(id, name, pass, age, role);
     }

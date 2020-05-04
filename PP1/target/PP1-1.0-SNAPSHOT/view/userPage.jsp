@@ -10,7 +10,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     Long result = request.getParameter("Id") == null ? null : Long.parseLong(request.getParameter("Id"));
-    System.out.println(result);
     User user;
     if (result != null) user = Service.getInstance().getById(result);
     else user = Active.getInstance().getActive();
@@ -24,9 +23,9 @@
         age = user.getAge();
     }
     //SUCCESS GREEN
-    //String color = "red";
-    //Long check = (Long) request.getAttribute("check");
-    //if (check != null) color = "green";
+    String color = "red";
+    Long check = (Long) request.getAttribute("check");
+    if (check != null) color = "green";
     String tableHeader = "Данные пользователя " + name;
 %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -41,11 +40,9 @@
     <h5>Страница пользователя <%= name%>
     </h5>
 </div>
-
-
 <div class="w3-display-container w3-center w3-margin-bottom w3-padding">
     <div class="w3-container w3-center w3-display-topmiddle w3-margin-bottom w3-padding" style="width:75%;">
-        <%--<%
+        <%
             if (request.getAttribute("Result") != null) {
                 out.println("<div class=\"w3-panel w3-" + color + " w3-display-container w3-card-4 w3-round\">\n" +
                         "   <span onclick=\"this.parentElement.style.display='none'\"\n" +
@@ -53,7 +50,7 @@
                         "   <h5>" + request.getAttribute("Result") + "</h5>\n" +
                         "</div>");
             }
-        %>--%>
+        %>
         <div class="w3-card-4 w3-white" style="width:100%">
             <div class="w3-container w3-left-align w3-display-container w3-green">
                 <%
@@ -63,7 +60,6 @@
                 %>
                 <h4><%= tableHeader%></h4>
             </div>
-
             <table class="w3-table w3-centered w3-bordered w3-hoverable">
                 <thead>
                 <tr>
@@ -91,14 +87,13 @@
             %>
             <%
                 if (Active.getInstance().getActive().getRole().equals("user")) {
-                    out.println("<form action=\"" + request.getContextPath() + "/login\" method=\"post\" style=\"display:inline\">\n" +
+                    out.println("<form action=\"" + request.getContextPath() + "/user\" method=\"post\" style=\"display:inline\">\n" +
                             "                <input type=\"hidden\" name=\"name\" value=\"log\">\n" +
                             "                <input type=\"hidden\" name=\"pass\" value=\"off\">\n" +
                             "                <button type=\"submit\" class=\"w3-button w3-padding-large w3-green w3-margin-bottom w3-text-white\">Выйти</button>\n" +
                             "            </form>");
                 }
             %>
-
         </div>
     </div>
 </div>

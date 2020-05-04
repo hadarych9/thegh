@@ -11,7 +11,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     String tableHeader = "База данных пользователей";
-    List<User> users = (List<User>) request.getAttribute("userData");
     User admin = Active.getInstance().getActive();
     //SUCCESS GREEN
     String color = "red";
@@ -102,7 +101,7 @@
                 <input type="hidden" name="drop" value="true">
                 <button type="submit" class="w3-button w3-blue-grey w3-text-white">Очистить таблицу</button>
             </form>
-            <form action="${pageContext.request.contextPath}/login" method="post" style="display:inline">
+            <form action="${pageContext.request.contextPath}/user" method="post" style="display:inline">
                 <input type="hidden" name="name" value="log">
                 <input type="hidden" name="pass" value="off">
                 <button type="submit" class="w3-button w3-blue-grey w3-text-white">Выйти</button>

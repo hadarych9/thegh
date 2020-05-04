@@ -41,9 +41,6 @@ public class LoginServlet extends HttpServlet {
             result = "Пожалуйста, заполните все поля";
         } else if(!name.equals(name.replaceAll("[^\\da-zA-Zа-яёА-ЯЁ]", ""))){
             result = "Для ввода логина необходимо использовать только буквы или цифры";
-        } else if(name.equals("log") & password.equals("off")){
-            result = "Вы вышли из системы";
-            Active.getInstance().setActive(null);
         } else if(user == null && service.doesUserNotExist(name)) {
             result = "Такого пользователя не существует";
         } else if(!password.equals(user.getPassword())){
@@ -61,15 +58,10 @@ public class LoginServlet extends HttpServlet {
             if(Active.getInstance().getActive().getRole().equals("admin")){
                 req.getRequestDispatcher("/admin").forward(req, resp);
             } else {
-                //req.getRequestDispatcher("/user").forward(req, resp);
-                resp.sendRedirect("/user");
+                req.getRequestDispatcher("view/userPage.jsp").forward(req, resp);
             }
             return;
         }
-        /*if(check != null && Active.getInstance().getActive() != null){
-            req.getRequestDispatcher("/").forward(req, resp);
-            return;
-        }*/
         req.getRequestDispatcher("view/login.jsp").forward(req, resp);
     }
 }
